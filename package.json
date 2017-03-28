@@ -1,0 +1,24 @@
+{
+  "name": "tesseract-node-bindings",
+  "version": "0.1.0",
+  "description": "Tesseract Bindings For Node",
+  "main": "index.js",
+  "repository": {},
+  "author": "Michael T. Schmidt <schmidmt@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "bindings": "^1.2.1",
+    "nan": "^2.5.1"
+  },
+  "devDependencies": {
+    "faucet": "^0.0.1",
+    "istanbul": "^0.4.5",
+    "tape": "^4.6.3"
+  },
+  "scripts": {
+    "install": "node-gyp rebuild",
+    "build-debug": "node-gyp rebuild --debug --verbose",
+    "pretest": "npm run build-debug",
+    "test": "node test/unit.js"
+  }
+}
