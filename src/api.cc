@@ -3,7 +3,6 @@
 #include <nan.h>
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
-#include <iostream>
 
 #include "api.h"
 #include "pix.h"
@@ -51,7 +50,6 @@ class OCRWorker : public AsyncWorker {
             if (!local_psm->IsUndefined()) {
                 if(local_psm->IsNumber()) {
                     psm = (tesseract::PageSegMode) To<int>(local_psm).FromJust();
-                    std::cout << "PSM: " << psm << std::endl;
                 } else {
                     SetErrorMessage("OCR option psm must be an integer");
                     return;
