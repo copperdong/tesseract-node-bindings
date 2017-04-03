@@ -16,10 +16,7 @@ class NTApi : public Nan::ObjectWrap {
         ~NTApi();
 
     private:
-        tesseract::TessBaseAPI * api;
-        static NAN_METHOD(New);
         static NAN_METHOD(ocr);
-        static inline Nan::Persistent<v8::Function> & constructor();
 };
 
 #endif // NT_API_H_

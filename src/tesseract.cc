@@ -12,26 +12,27 @@ using tesseract::PageSegMode;
 
 
 NAN_MODULE_INIT(InitAll) {
+    std::string version = tesseract::TessBaseAPI::Version();
+    Nan::Set(target, Nan::New<v8::String>("tesseractVersion").ToLocalChecked(), Nan::New<v8::String>(version).ToLocalChecked());
+
+    Nan::Set(target, Nan::New("PSM_OSD_ONLY").ToLocalChecked(),               Nan::New<v8::Number>(PageSegMode::PSM_OSD_ONLY));
+    Nan::Set(target, Nan::New("PSM_AUTO_OSD").ToLocalChecked(),               Nan::New<v8::Number>(PageSegMode::PSM_AUTO_OSD));
+    Nan::Set(target, Nan::New("PSM_AUTO_ONLY").ToLocalChecked(),              Nan::New<v8::Number>(PageSegMode::PSM_AUTO_ONLY));
+    Nan::Set(target, Nan::New("PSM_AUTO").ToLocalChecked(),                   Nan::New<v8::Number>(PageSegMode::PSM_AUTO));
+    Nan::Set(target, Nan::New("PSM_SINGLE_COLUMN").ToLocalChecked(),          Nan::New<v8::Number>(PageSegMode::PSM_SINGLE_COLUMN));
+    Nan::Set(target, Nan::New("PSM_SINGLE_BLOCK_VERT_TEXT").ToLocalChecked(), Nan::New<v8::Number>(PageSegMode::PSM_SINGLE_BLOCK_VERT_TEXT));
+    Nan::Set(target, Nan::New("PSM_SINGLE_BLOCK").ToLocalChecked(),           Nan::New<v8::Number>(PageSegMode::PSM_SINGLE_BLOCK));
+    Nan::Set(target, Nan::New("PSM_SINGLE_LINE").ToLocalChecked(),            Nan::New<v8::Number>(PageSegMode::PSM_SINGLE_LINE));
+    Nan::Set(target, Nan::New("PSM_SINGLE_WORD").ToLocalChecked(),            Nan::New<v8::Number>(PageSegMode::PSM_SINGLE_WORD));
+    Nan::Set(target, Nan::New("PSM_CIRCLE_WORD").ToLocalChecked(),            Nan::New<v8::Number>(PageSegMode::PSM_CIRCLE_WORD));
+    Nan::Set(target, Nan::New("PSM_SINGLE_WORD").ToLocalChecked(),            Nan::New<v8::Number>(PageSegMode::PSM_SINGLE_WORD));
+    Nan::Set(target, Nan::New("PSM_SINGLE_CHAR").ToLocalChecked(),            Nan::New<v8::Number>(PageSegMode::PSM_SINGLE_CHAR));
+    Nan::Set(target, Nan::New("PSM_SPARSE_TEXT").ToLocalChecked(),            Nan::New<v8::Number>(PageSegMode::PSM_SPARSE_TEXT));
+    Nan::Set(target, Nan::New("PSM_SPARSE_TEXT_OSD").ToLocalChecked(),        Nan::New<v8::Number>(PageSegMode::PSM_SPARSE_TEXT_OSD));
+    Nan::Set(target, Nan::New("PSM_RAW_LINE").ToLocalChecked(),               Nan::New<v8::Number>(PageSegMode::PSM_RAW_LINE));
+
     NTApi::Init(target);
     NTPix::Init(target);
-
-    target->Set(Nan::New("PSM_OSD_ONLY").ToLocalChecked(),               Nan::New<v8::Number>(PageSegMode::PSM_OSD_ONLY));
-    target->Set(Nan::New("PSM_AUTO_OSD").ToLocalChecked(),               Nan::New<v8::Number>(PageSegMode::PSM_AUTO_OSD));
-    target->Set(Nan::New("PSM_AUTO_ONLY").ToLocalChecked(),              Nan::New<v8::Number>(PageSegMode::PSM_AUTO_ONLY));
-    target->Set(Nan::New("PSM_AUTO").ToLocalChecked(),                   Nan::New<v8::Number>(PageSegMode::PSM_AUTO));
-    target->Set(Nan::New("PSM_SINGLE_COLUMN").ToLocalChecked(),          Nan::New<v8::Number>(PageSegMode::PSM_SINGLE_COLUMN));
-    target->Set(Nan::New("PSM_SINGLE_BLOCK_VERT_TEXT").ToLocalChecked(), Nan::New<v8::Number>(PageSegMode::PSM_SINGLE_BLOCK_VERT_TEXT));
-    target->Set(Nan::New("PSM_SINGLE_BLOCK").ToLocalChecked(),           Nan::New<v8::Number>(PageSegMode::PSM_SINGLE_BLOCK));
-    target->Set(Nan::New("PSM_SINGLE_LINE").ToLocalChecked(),            Nan::New<v8::Number>(PageSegMode::PSM_SINGLE_LINE));
-    target->Set(Nan::New("PSM_SINGLE_WORD").ToLocalChecked(),            Nan::New<v8::Number>(PageSegMode::PSM_SINGLE_WORD));
-    target->Set(Nan::New("PSM_CIRCLE_WORD").ToLocalChecked(),            Nan::New<v8::Number>(PageSegMode::PSM_CIRCLE_WORD));
-    target->Set(Nan::New("PSM_SINGLE_WORD").ToLocalChecked(),            Nan::New<v8::Number>(PageSegMode::PSM_SINGLE_WORD));
-    target->Set(Nan::New("PSM_SINGLE_CHAR").ToLocalChecked(),            Nan::New<v8::Number>(PageSegMode::PSM_SINGLE_CHAR));
-    target->Set(Nan::New("PSM_SPARSE_TEXT").ToLocalChecked(),            Nan::New<v8::Number>(PageSegMode::PSM_SPARSE_TEXT));
-    target->Set(Nan::New("PSM_SPARSE_TEXT_OSD").ToLocalChecked(),        Nan::New<v8::Number>(PageSegMode::PSM_SPARSE_TEXT_OSD));
-    target->Set(Nan::New("PSM_RAW_LINE").ToLocalChecked(),               Nan::New<v8::Number>(PageSegMode::PSM_RAW_LINE));
-
-
 }
 
 NODE_MODULE(tesseract, InitAll)

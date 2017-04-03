@@ -19,7 +19,9 @@ class NTPix : public Nan::ObjectWrap {
 
     private:
         static NAN_METHOD(New);
-            
+        static NAN_GETTER(GetWidth);
+        static NAN_GETTER(GetHeight);
+        static NAN_GETTER(GetColorDepth);
 };
 
 #endif // NT_PIX_H_

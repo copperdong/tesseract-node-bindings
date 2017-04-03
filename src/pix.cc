@@ -48,6 +48,9 @@ class ImgLoaderWorker : public AsyncWorker {
             } else {
                 pix->image = NULL;
             }
+            if (!pix->image) {
+                SetErrorMessage("The given image was not readable");
+            }
         }
 
         void HandleOKCallback () {
@@ -76,7 +79,9 @@ NTPix::NTPix() {
 }
 
 NTPix::~NTPix() {
-    pixDestroy(&image);
+    if (image) {
+        pixDestroy(&image);
+    }
 }
 
 Nan::Persistent<Function> NTPix::constructor;
@@ -89,6 +94,12 @@ NAN_MODULE_INIT(NTPix::Init) {
 
     // Attach method to base module.
     Nan::SetMethod(target, "readImage", NTPix::readImage);
+
+    // Accessors
+    v8::Local<v8::ObjectTemplate> itpl = tpl->InstanceTemplate();
+    Nan::SetAccessor(itpl, Nan::New("height").ToLocalChecked(), GetHeight);
+    Nan::SetAccessor(itpl, Nan::New("width").ToLocalChecked(), GetWidth);
+    Nan::SetAccessor(itpl, Nan::New("depth").ToLocalChecked(), GetColorDepth);
 
     constructor.Reset(Nan::GetFunction(tpl).ToLocalChecked());
 }
@@ -124,4 +135,19 @@ NAN_METHOD(NTPix::readImage) {
     } else {
         Nan::ThrowTypeError("readImage requries two arguments: (string|buffer, callback)");
     }
+}
+
+NAN_GETTER(NTPix::GetWidth) {
+    NTPix *obj = ObjectWrap::Unwrap<NTPix>(info.This());
+    info.GetReturnValue().Set(Nan::New<v8::Number>(obj->image->w));
+}
+
+NAN_GETTER(NTPix::GetHeight) {
+    NTPix *obj = ObjectWrap::Unwrap<NTPix>(info.This());
+    info.GetReturnValue().Set(Nan::New<v8::Number>(obj->image->h));
+}
+
+NAN_GETTER(NTPix::GetColorDepth) {
+    NTPix *obj = ObjectWrap::Unwrap<NTPix>(info.This());
+    info.GetReturnValue().Set(Nan::New<v8::Number>(obj->image->d));
 }

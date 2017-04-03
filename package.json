@@ -20,6 +20,6 @@
     "install": "node-gyp rebuild",
     "build-debug": "node-gyp rebuild --debug --verbose",
     "pretest": "npm run build-debug",
-    "test": "node test/unit.js"
+    "test": "node --expose-gc test/unit.js"
   }
 }

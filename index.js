@@ -1,5 +1,8 @@
 const bluebird = require('bluebird');
 const tesseract = require('bindings')('tesseract.node');
+const version = require('./package.json').version;
+
+tesseract.version = version;
 
 bluebird.promisifyAll(tesseract, {
   filter: (name, func, target, passesDefaultFilter) => {
