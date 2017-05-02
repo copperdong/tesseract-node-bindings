@@ -19,6 +19,14 @@ using Nan::Null;
 using Nan::To;
 
 /**
+ * EstimateSizeOfPix
+ */
+int estimateSizeOfPix(Pix * p) {
+    return p->w * p->h * p->d;
+}
+
+
+/**
  * ImgLoaderWorker - Async worker for performing ocr task
  */
 class ImgLoaderWorker : public AsyncWorker {
@@ -58,6 +66,7 @@ class ImgLoaderWorker : public AsyncWorker {
             Local<v8::Object> obj = Nan::NewInstance(cons, 0, NULL).ToLocalChecked();
             NTPix * pix = Nan::ObjectWrap::Unwrap<NTPix>(obj);
             pix->image = image;
+            Nan::AdjustExternalMemory(estimateSizeOfPix(image));
 
             Local<Value> argv[2];
             argv[0] = Nan::Undefined();
@@ -80,6 +89,7 @@ NTPix::NTPix() {
 NTPix::~NTPix() {
     if (image) {
         pixDestroy(&image);
+        Nan::AdjustExternalMemory(-estimateSizeOfPix(image));
     }
 }
 
