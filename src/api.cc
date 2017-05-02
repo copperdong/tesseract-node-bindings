@@ -3,7 +3,6 @@
 #include <nan.h>
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
-#include <iostream>
 
 #include "api.h"
 #include "pix.h"
