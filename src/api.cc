@@ -3,6 +3,7 @@
 #include <nan.h>
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
+#include <iostream>
 
 #include "api.h"
 #include "pix.h"
@@ -76,7 +77,7 @@ class OCRWorker : public AsyncWorker {
             }
 
             if (!local_psm->IsUndefined()) {
-                if(local_psm->IsNumber()) {
+                if (local_psm->IsNumber()) {
                     psm = (tesseract::PageSegMode) To<int>(local_psm).FromJust();
                 } else {
                     SetErrorMessage("OCR option psm must be an integer");
@@ -121,17 +122,28 @@ class OCRWorker : public AsyncWorker {
                 vars_vec, vars_values,
                 set_only_non_debug_params
             );
+
             if (r) {
                 SetErrorMessage("Tesseract API failed to initialize");
                 return;
             }
 
+            if (psm >= tesseract::PageSegMode::PSM_COUNT) {
+                SetErrorMessage("Invalid PSM");
+                return;
+            }
             api->SetPageSegMode(psm);
             api->SetImage(image->image);
+
             if (rect.w > 0 && rect.h > 0) {
                 api->SetRectangle(rect.x, rect.y, rect.w, rect.h);
             }
+
             text = api->GetUTF8Text();
+            if (!text) {
+                SetErrorMessage("Failed to OCR");
+                return;
+            }
         }
 
         void HandleOKCallback() {

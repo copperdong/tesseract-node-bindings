@@ -24,11 +24,6 @@ using Nan::To;
 class ImgLoaderWorker : public AsyncWorker {
     public:
         ImgLoaderWorker(Callback *callback, v8::Local<v8::String> path_): AsyncWorker(callback) {
-
-            Local<Function> cons = Nan::New(NTPix::constructor);
-            Local<v8::Object> obj = Nan::NewInstance(cons, 0, NULL).ToLocalChecked();
-            pix = Nan::ObjectWrap::Unwrap<NTPix>(obj);
-
             HandleScope scope;
             path = *Nan::Utf8String(path_);
             buffer = NULL;
@@ -36,10 +31,6 @@ class ImgLoaderWorker : public AsyncWorker {
             buffer_size = 0;
         }
         ImgLoaderWorker(Callback *callback, v8::Local<v8::Object> buffer_): AsyncWorker(callback) {
-            Local<Function> cons = Nan::New(NTPix::constructor);
-            Local<v8::Object> obj = Nan::NewInstance(cons, 0, NULL).ToLocalChecked();
-            pix = Nan::ObjectWrap::Unwrap<NTPix>(obj);
-
             HandleScope scope;
             buffer = (unsigned char *) node::Buffer::Data(buffer_);
             buffer_size = node::Buffer::Length(buffer_);
@@ -49,27 +40,28 @@ class ImgLoaderWorker : public AsyncWorker {
 
         void Execute () {
             if (usePath) {
-                pix->image = pixRead(path.c_str());
+                image = pixRead(path.c_str());
             } else if (buffer_size > 0) {
-                pix->image = pixReadMem(buffer, buffer_size);
+                image = pixReadMem(buffer, buffer_size);
             } else {
-                pix->image = NULL;
+                image = NULL;
             }
-            if (!pix->image) {
+            if (!image) {
                 SetErrorMessage("The given image was not readable");
             }
         }
 
         void HandleOKCallback () {
             HandleScope scope;
+
+            Local<Function> cons = Nan::New(NTPix::constructor);
+            Local<v8::Object> obj = Nan::NewInstance(cons, 0, NULL).ToLocalChecked();
+            NTPix * pix = Nan::ObjectWrap::Unwrap<NTPix>(obj);
+            pix->image = image;
+
             Local<Value> argv[2];
-            if (pix->image) {
-                argv[0] = Nan::Undefined();
-                argv[1] = pix->handle();
-            } else {
-                argv[0] = Nan::New<v8::String>("Unable to read image").ToLocalChecked();
-                argv[1] = Nan::Undefined();
-            }
+            argv[0] = Nan::Undefined();
+            argv[1] = pix->handle();
             callback->Call(2, argv);
         }
 
@@ -78,7 +70,7 @@ class ImgLoaderWorker : public AsyncWorker {
         unsigned char * buffer;
         size_t buffer_size;
         std::string path;
-        NTPix * pix;
+        Pix * image;
 };
 
 NTPix::NTPix() {

@@ -1,5 +1,8 @@
 const test = require('tape');
 const fs = require('fs');
+const path = require('path');
+
+const testImgPath = path.resolve(path.join(__dirname, '../helloWorld.png'));
 
 test('module', (t) => {
     const tesseract = require('..');
@@ -17,7 +20,7 @@ test('Version', (t) => {
 
 test('Pix', (t) => {
     const tesseract = require('..');
-    const imgBuffer = fs.readFileSync('./helloWorld.png');
+    const imgBuffer = fs.readFileSync(testImgPath);
 
     t.plan(7);
     tesseract.readImage('../helloWorld.png', (err, img) => {
@@ -37,7 +40,7 @@ test('Pix', (t) => {
 test('Pix Failure', (t) => {
   const tesseract = require('..');
   t.plan(2);
-  tesseract.readImage(Buffer.from('0123456789', 'hex'), (err, img) => {
+  tesseract.readImage(Buffer.from('012345678901234567890123456789', 'hex'), (err, img) => {
     t.ok(err, 'expected an error');
     t.notOk(img, 'There should be no image');
   });

@@ -18,7 +18,13 @@
   },
   "scripts": {
     "install": "node-gyp rebuild",
-    "build-debug": "node-gyp rebuild --debug --verbose",
+    "build-debug": "node-gyp rebuild --debug",
+    "coverage:run": "npm run build-debug && node --nouse_idle_notification --expose-gc ./node_modules/.bin/istanbul cover --report lcovonly -- test/unit.js",
+    "coverage:buildLcov": "npm run coverage:run && lcov --capture --base-directory build/ --directory . --output-file coverage/addon.info",
+    "coverage:extract": "npm run coverage:buildLcov && lcov --extract coverage/addon.info '*src/*' --output-file coverage/bindings.info",
+    "coverage:merge": "npm run coverage:extract && lcov --test-name tesseract-node-bindings --add-tracefile coverage/lcov.info --add-tracefile coverage/bindings.info --output-file coverage/tesseract-node-bindings.info",
+    "coverage:html": "npm run coverage:merge && genhtml --output-directory coverage coverage/tesseract-node-bindings.info",
+    "coverage": "npm run coverage:html",
     "pretest": "npm run build-debug",
     "test": "node --expose-gc test/unit.js"
   }
