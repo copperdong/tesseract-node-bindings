@@ -23,16 +23,23 @@ using Nan::To;
  */
 class ImgLoaderWorker : public AsyncWorker {
     public:
-        ImgLoaderWorker(Callback *callback, NTPix * pix_, v8::Local<v8::String> path_): AsyncWorker(callback) {
-            pix = pix_;
+        ImgLoaderWorker(Callback *callback, v8::Local<v8::String> path_): AsyncWorker(callback) {
+
+            Local<Function> cons = Nan::New(NTPix::constructor);
+            Local<v8::Object> obj = Nan::NewInstance(cons, 0, NULL).ToLocalChecked();
+            pix = Nan::ObjectWrap::Unwrap<NTPix>(obj);
+
             HandleScope scope;
             path = *Nan::Utf8String(path_);
             buffer = NULL;
             usePath = true;
             buffer_size = 0;
         }
-        ImgLoaderWorker(Callback *callback, NTPix * pix_, v8::Local<v8::Object> buffer_): AsyncWorker(callback) {
-            pix = pix_;
+        ImgLoaderWorker(Callback *callback, v8::Local<v8::Object> buffer_): AsyncWorker(callback) {
+            Local<Function> cons = Nan::New(NTPix::constructor);
+            Local<v8::Object> obj = Nan::NewInstance(cons, 0, NULL).ToLocalChecked();
+            pix = Nan::ObjectWrap::Unwrap<NTPix>(obj);
+
             HandleScope scope;
             buffer = (unsigned char *) node::Buffer::Data(buffer_);
             buffer_size = node::Buffer::Length(buffer_);
@@ -92,6 +99,10 @@ NAN_MODULE_INIT(NTPix::Init) {
     tpl->SetClassName(Nan::New("Pix").ToLocalChecked());
     tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
+    // Prototype
+    Local<v8::ObjectTemplate> proto = tpl->PrototypeTemplate();
+    proto->SetInternalFieldCount(1);
+
     // Attach method to base module.
     Nan::SetMethod(target, "readImage", NTPix::readImage);
 
@@ -122,16 +133,12 @@ NAN_METHOD(NTPix::readImage) {
     }
     Callback *callback = new Callback(info[1].As<Function>());
 
-    Local<Function> cons = Nan::New(constructor);
-    Local<v8::Object> obj = Nan::NewInstance(cons, 0, NULL).ToLocalChecked();
-    NTPix * pix = Nan::ObjectWrap::Unwrap<NTPix>(obj);
-
     if (info[0]->IsString()) {
         Local<v8::String> path = To<v8::String>(info[0]).ToLocalChecked();
-        AsyncQueueWorker(new ImgLoaderWorker(callback, pix, path));
+        AsyncQueueWorker(new ImgLoaderWorker(callback, path));
     } else if (node::Buffer::HasInstance(info[0])) {
         Local<v8::Object> buffer = To<v8::Object>(info[0]).ToLocalChecked();
-        AsyncQueueWorker(new ImgLoaderWorker(callback, pix, buffer));
+        AsyncQueueWorker(new ImgLoaderWorker(callback, buffer));
     } else {
         Nan::ThrowTypeError("readImage requries two arguments: (string|buffer, callback)");
     }

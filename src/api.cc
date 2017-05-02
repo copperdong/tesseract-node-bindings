@@ -111,9 +111,7 @@ class OCRWorker : public AsyncWorker {
         ~OCRWorker() {}
 
         void Execute () {
-            if (ErrorMessage()) {
-                return;
-            }
+            if (ErrorMessage()) { return; }
             tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
             int r = api->Init(
                 dataPath.size() > 0 ? dataPath.c_str() : NULL,
@@ -134,7 +132,6 @@ class OCRWorker : public AsyncWorker {
                 api->SetRectangle(rect.x, rect.y, rect.w, rect.h);
             }
             text = api->GetUTF8Text();
-            api->End();
         }
 
         void HandleOKCallback() {
@@ -176,7 +173,6 @@ NAN_METHOD(NTApi::ocr) {
         Nan::ThrowTypeError("ocr takes two or three arguments. Signature: (pix, [options], callback)");
         return;
     }
-    NTPix * image = Nan::ObjectWrap::Unwrap<NTPix>(info[0]->ToObject());
 
     if (info.Length() == 3) {
         Nan::MaybeLocal<Object> MaybeOptions = Nan::To<Object>(info[1]);
@@ -187,6 +183,13 @@ NAN_METHOD(NTApi::ocr) {
     } else {
         callback = new Callback(info[1].As<Function>());
     }
+    
+    if (!info[0]->IsObject()) {
+        Nan::ThrowTypeError("the first argument to ocr must be a Pix object.");
+        return;
+    }
+
+    NTPix * image = Nan::ObjectWrap::Unwrap<NTPix>(info[0]->ToObject());
 
     AsyncQueueWorker(new OCRWorker(callback, image, options));
     info.GetReturnValue().SetNull();

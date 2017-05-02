@@ -34,6 +34,15 @@ test('Pix', (t) => {
     });
 });
 
+test('Pix Failure', (t) => {
+  const tesseract = require('..');
+  t.plan(2);
+  tesseract.readImage(Buffer.from('0123456789', 'hex'), (err, img) => {
+    t.ok(err, 'expected an error');
+    t.notOk(img, 'There should be no image');
+  });
+});
+
 test('ocr', (t) => {
     const tesseract = require('..');
     tesseract.readImage('../helloWorld.png', (err, img) => {
