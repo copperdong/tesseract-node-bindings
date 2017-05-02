@@ -124,11 +124,13 @@ class OCRWorker : public AsyncWorker {
 
             if (r) {
                 SetErrorMessage("Tesseract API failed to initialize");
+                delete api;
                 return;
             }
 
             if (psm >= tesseract::PageSegMode::PSM_COUNT) {
                 SetErrorMessage("Invalid PSM");
+                delete api;
                 return;
             }
             api->SetPageSegMode(psm);
@@ -139,6 +141,7 @@ class OCRWorker : public AsyncWorker {
             }
 
             text = api->GetUTF8Text();
+            delete api;
             if (!text) {
                 SetErrorMessage("Failed to OCR");
                 return;
