@@ -2,7 +2,7 @@
 #include <v8.h>
 #include <nan.h>
 #include <node.h>
-
+#include <iostream>
 #include "pix.h"
 
 using v8::Function;
@@ -22,6 +22,9 @@ using Nan::To;
  * EstimateSizeOfPix
  */
 int estimateSizeOfPix(Pix * p) {
+    if (!p) {
+        return 0;
+    }
     return p->w * p->h * p->d;
 }
 
@@ -88,8 +91,8 @@ NTPix::NTPix() {
 
 NTPix::~NTPix() {
     if (image) {
-        pixDestroy(&image);
         Nan::AdjustExternalMemory(-estimateSizeOfPix(image));
+        pixDestroy(&image);
     }
 }
 
