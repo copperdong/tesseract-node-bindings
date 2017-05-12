@@ -93,6 +93,7 @@ NTPix::~NTPix() {
     if (image) {
         Nan::AdjustExternalMemory(-estimateSizeOfPix(image));
         pixDestroy(&image);
+        image = NULL;
     }
 }
 
