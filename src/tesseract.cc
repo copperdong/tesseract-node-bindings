@@ -29,7 +29,9 @@ NAN_MODULE_INIT(InitAll) {
     Nan::Set(target, Nan::New("PSM_SINGLE_CHAR").ToLocalChecked(),            Nan::New<v8::Number>(PageSegMode::PSM_SINGLE_CHAR));
     Nan::Set(target, Nan::New("PSM_SPARSE_TEXT").ToLocalChecked(),            Nan::New<v8::Number>(PageSegMode::PSM_SPARSE_TEXT));
     Nan::Set(target, Nan::New("PSM_SPARSE_TEXT_OSD").ToLocalChecked(),        Nan::New<v8::Number>(PageSegMode::PSM_SPARSE_TEXT_OSD));
+#if (TESSERACT_VERSION & 0xFF0000 >= 3 && TESSERACT_VERSION & 0x00FF00 > 3)
     Nan::Set(target, Nan::New("PSM_RAW_LINE").ToLocalChecked(),               Nan::New<v8::Number>(PageSegMode::PSM_RAW_LINE));
+#endif
 
     NTApi::Init(target);
     NTPix::Init(target);

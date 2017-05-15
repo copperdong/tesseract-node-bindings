@@ -75,9 +75,10 @@ test('ocr psm', (t) => {
 
 test('ocr rect', (t) => {
     const tesseract = require('..');
-    t.plan(6);
+    t.plan(7);
     tesseract.readImage('../helloWorld.png', (err, img) => {
-        tesseract.ocr(img, { psm: tesseract.PSM_SINGLE_LINE, rect: [80, 60, 111, 106] }, (ocrErr, text) => {
+       tesseract.ocr(img, { psm: tesseract.PSM_SINGLE_LINE, rect: [80, 60, 111, 106] }, (ocrErr, text) => {
+            t.ok(text, 'Text is defined');
             t.equal(text.trim(), 'Hello');
             t.error(ocrErr, 'No error should have been set');
             global.gc();

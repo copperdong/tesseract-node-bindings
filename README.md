@@ -1,5 +1,8 @@
 # Bindings from Node to Tesseract
 
+[![Build Status](https://api.travis-ci.org/schmidmt/tesseract-node-bindings.svg?branch=master)](https://travis-ci.org/schmidmt/tesseract-node-bindings)
+[[![Coverage](http://codecov.io/github/schmidmt/tesseract-node-bindings/coverage.svg?branch=master)](https://codecov.io/gh/schmidmt/tesseract-node-bindings)
+
 ## Leptonica Pix Interface
 Loading in an image is possible via the `readImage` function:
 ```javascript

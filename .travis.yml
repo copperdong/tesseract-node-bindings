@@ -1,0 +1,36 @@
+language: node_js
+node_js:
+    - "7"
+    - "6"
+
+dist: trusty
+sudo: false
+
+before_install:
+    - npm install node-gyp
+    - curl https://launchpadlibrarian.net/183362661/tesseract.pc > ~/tesseract.pc
+
+install:
+    - npm install
+    - npm run coverage
+
+env:
+    global:
+        - PKG_CONFIG_PATH=~
+    matrix:
+        - CXX=g++-4.8
+
+addons:
+    apt:
+        sources:
+            - ubuntu-toolchain-r-test
+        packages:
+            - g++-4.8
+            - lcov
+            - pkg-config
+            - tesseract-ocr
+            - libtesseract-dev
+            - libleptonica-dev
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -s coverage -f *.info

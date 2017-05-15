@@ -12,6 +12,7 @@
     "nan": "^2.5.1"
   },
   "devDependencies": {
+    "codecov": "^2.2.0",
     "faucet": "^0.0.1",
     "istanbul": "^0.4.5",
     "tape": "^4.6.3"
